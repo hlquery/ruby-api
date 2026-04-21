@@ -131,20 +131,19 @@ Start with a small `nprobe`, then raise it only if obvious neighbors are being m
 
 ### Reduce Text Example
 
-If `ai_search` is enabled, you can call the module directly:
+You can call custom module routes directly:
 
 ```ruby
-summary = client.execute_request(
+module_response = client.execute_request(
   "GET",
-  "/modules/ai_search/talk",
+  "/modules/<name>/<route>",
   nil,
   {
-    q: "summarize onboarding guide in docs",
-    run: "true"
+    q: "example query"
   }
 )
 
-puts summary.body.inspect
+puts module_response.body.inspect
 ```
 
 ## Files
