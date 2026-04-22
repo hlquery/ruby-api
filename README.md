@@ -37,7 +37,7 @@ Local usage:
 $LOAD_PATH.unshift(File.expand_path("lib", __dir__))
 require "hlquery"
 
-client = Hlquery::Client.new("http://localhost:9200")
+client = Hlquery::Client.new(ENV["HLQ_BASE_URL"] || ENV["HLQUERY_BASE_URL"] || "http://localhost:9200")
 ```
 
 Gem metadata in this directory targets:
