@@ -4,47 +4,48 @@
 
 <div align="center">
 
-**A modular Ruby client library for hlquery, based on the PHP client layout and endpoint coverage.**
+**A modular Ruby client library for hlquery, designed with a familiar and intuitive API structure.**
 
 [![Follow hlquery](https://img.shields.io/badge/Follow-%40hlquery-blue?logo=x&logoColor=white)](https://x.com/hlquery)
 [![Commit Activity](https://img.shields.io/github/commit-activity/m/hlquery/ruby-api)](https://github.com/hlquery/ruby-api/pulse)
-[![hlquery](https://img.shields.io/badge/GitHub-hlquery-181717?logo=github&logoColor=white)](https://github.com/hlquery/ruby-api)
+[![GitHub](https://img.shields.io/badge/GitHub-ruby--api-181717?logo=github&logoColor=white)](https://github.com/hlquery/ruby-api/stargazers)
+[![hlquery](https://img.shields.io/badge/GitHub-hlquery-blue?logo=github&logoColor=white)](https://github.com/hlquery/hlquery/stargazers)
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 
 </div>
 
-# hlquery Ruby API Client
+### What is the hlquery Ruby API?
 
-Compact Ruby client for hlquery. It mirrors the PHP client structure closely, but exposes idiomatic Ruby method names.
+The hlquery Ruby API is the official Ruby client for hlquery. It mirrors the practical endpoint coverage of the other hlquery clients while exposing Ruby-style method names and service objects.
 
-Included in the current client:
+It is intended for scripts, services, internal tools, and apps that want a small Ruby wrapper over hlquery's HTTP interface.
 
-- Collections
-- Documents
-- Search
-- Keys
-- Aliases
-- Overrides
-- Synonyms
-- Stopwords
-- System helpers, including `etc`
+### Why use it?
 
-## Install
+- Cleaner Ruby API than hand-written Net::HTTP calls.
+- Consistent auth, params, and parsed response handling.
+- Coverage for collections, documents, search, and custom route access.
+
+### Why choose it over raw HTTP?
+
+Choose the Ruby client over raw HTTP when you want less request boilerplate, application code that stays easier to read, and a structure similar to the other official clients.
+
+### Install
 
 Local usage:
 
 ```ruby
 $LOAD_PATH.unshift(File.expand_path("lib", __dir__))
 require "hlquery"
+```
 
+Client initialization:
+
+```ruby
 client = Hlquery::Client.new(ENV["HLQ_BASE_URL"] || ENV["HLQUERY_BASE_URL"] || "http://localhost:9200")
 ```
 
-Gem metadata in this directory targets:
-
-- `https://github.com/hlquery/ruby-api`
-
-## Quick Start
+### Quick Start
 
 ```ruby
 $LOAD_PATH.unshift(File.expand_path("lib", __dir__))
@@ -59,7 +60,7 @@ collections = client.list_collections(0, 10)
 puts collections.body.inspect
 ```
 
-## Auth
+### Auth
 
 ```ruby
 client = Hlquery::Client.new("http://localhost:9200", {
@@ -67,44 +68,31 @@ client = Hlquery::Client.new("http://localhost:9200", {
   auth_method: "bearer"
 })
 
-client.set_auth_token("your_token_here", "api-key")
+client.set_auth_token("your_token_here", "bearer")
+client.set_auth_token("your_api_key_here", "api-key")
 ```
 
-## Common Examples
+### SAM
 
-### Create a collection
+If your current Ruby client build includes the SAM helper, use it directly. Otherwise use the raw request helper against the SAM endpoints:
 
-```ruby
-schema = {
-  "searchable_fields" => ["title", "description"],
-  "filterable_fields" => ["category", "in_stock"],
-  "sortable_fields" => ["price", "rating"]
-}
-
-response = client.collections.create("products", schema)
-puts response.body.inspect
-```
-
-### Add documents
+SAM is separate from vector search. It performs term and intent-style lookup, not vector similarity search.
 
 ```ruby
-client.documents.add("products", {
-  "id" => "sku-1",
-  "title" => "Trail Running Shoes",
-  "description" => "Lightweight shoes for mixed terrain",
-  "category" => "footwear",
-  "price" => 129,
-  "rating" => 4.7,
-  "in_stock" => true
+status = client.execute_request("GET", "/sam/status", nil, {
+  collection: "music"
 })
 
-client.documents.import("products", [
-  {
-    "id" => "sku-2",
-    "title" => "Waterproof Jacket",
-    "description" => "Breathable shell for wet weather"
-  }
-])
+history = client.execute_request("GET", "/sam/history", nil, {
+  collection: "music",
+  limit: 5
+})
+
+results = client.execute_request("GET", "/sam/search", nil, {
+  collection: "music",
+  q: "queen of pop",
+  limit: 10
+})
 ```
 
 ### Search
@@ -116,22 +104,11 @@ results = client.search("products", {
 })
 ```
 
-If `q` is set and `query_by` is omitted, the client tries to infer `query_by` from the collection's `searchable_fields`, matching the PHP client behavior.
-
-### Vector Search Notes
-
-For vector search, the knobs around the embedding usually matter more than the literal example values:
-
-- `field_name` must match the stored vector field
-- `topk` controls result count
-- `threshold` can cut weak matches
-- `nprobe` is the main recall/speed tradeoff on IVF-style indexes
-
-Start with a small `nprobe`, then raise it only if obvious neighbors are being missed.
+If `q` is set and `query_by` is omitted, the client tries to infer `query_by` from the collection's `searchable_fields`.
 
 ### Reduce Text Example
 
-You can call custom module routes directly:
+Use the raw request helper for custom module routes:
 
 ```ruby
 module_response = client.execute_request(
@@ -146,17 +123,13 @@ module_response = client.execute_request(
 puts module_response.body.inspect
 ```
 
-## Files
+### Notes
 
-- `lib/hlquery.rb`: main require entrypoint
-- `lib/hlquery/client.rb`: top-level client and convenience wrappers
-- `lib/hlquery/request.rb`: HTTP transport
-- `lib/hlquery/*.rb`: modular endpoint APIs
-- `examples/`: small usage scripts
-
-## Quick Local Run
+- Quick local run:
 
 ```bash
 ruby example.rb
 ruby examples/basic_usage.rb
 ```
+
+- See `lib/hlquery/*.rb` for the modular endpoint implementations.
