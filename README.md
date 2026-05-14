@@ -106,30 +106,23 @@ results = client.search("products", {
 
 If `q` is set and `query_by` is omitted, the client tries to infer `query_by` from the collection's `searchable_fields`.
 
-### Reduce Text Example
+### Contributing
 
-Use the raw request helper for custom module routes:
+We welcome contributions from the community! All contributions must be released under the BSD 3-Clause license.
 
-```ruby
-module_response = client.execute_request(
-  "GET",
-  "/modules/<name>/<route>",
-  nil,
-  {
-    q: "example query"
-  }
-)
+### How to Contribute
 
-puts module_response.body.inspect
-```
+- Check existing [issues](https://github.com/hlquery/hlquery/issues) or create new ones
+- Contribute to client libraries (Node.js, Go, Java, Python, PHP, Ruby, Rust, Perl, C++)
+- Test and report bugs
+- Improve documentation
 
-### Notes
+### Community
 
-- Quick local run:
+- 📖 [Documentation](https://docs.hlquery.com)
+- 🐦 [X (Twitter)](https://x.com/hlquery)
+- 📦 [GitHub](https://github.com/hlquery/hlquery)
 
-```bash
-ruby example.rb
-ruby examples/basic_usage.rb
-```
+### License
 
-- See `lib/hlquery/*.rb` for the modular endpoint implementations.
+hlquery is licensed under the [BSD 3-Clause License](https://opensource.org/licenses/BSD-3-Clause).
