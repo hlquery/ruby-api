@@ -8,7 +8,7 @@
 
 [![Follow hlquery](https://img.shields.io/badge/Follow-%40hlquery-blue?logo=x&logoColor=white)](https://x.com/hlquery)
 [![Commit Activity](https://img.shields.io/github/commit-activity/m/hlquery/ruby-api)](https://github.com/hlquery/ruby-api/pulse)
-[![GitHub](https://img.shields.io/badge/GitHub-ruby--api-181717?logo=github&logoColor=white)](https://github.com/hlquery/ruby-api/stargazers)
+[![GitHub](https://img.shields.io/badge/GitHub-ruby--api-purple?logo=github&logoColor=white)](https://github.com/hlquery/ruby-api/stargazers)
 [![hlquery](https://img.shields.io/badge/GitHub-hlquery-blue?logo=github&logoColor=white)](https://github.com/hlquery/hlquery/stargazers)
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 
@@ -16,7 +16,7 @@
 
 ### What is the hlquery Ruby API?
 
-The hlquery Ruby API is the official Ruby client for hlquery. It mirrors the practical endpoint coverage of the other hlquery clients while exposing Ruby-style method names and service objects.
+The hlquery Ruby API is the official Ruby client for [hlquery](https://github.com/hlquery/hlquery). It mirrors the practical endpoint coverage of the other hlquery clients while exposing Ruby-style method names and service objects.
 
 It is intended for scripts, services, internal tools, and apps that want a small Ruby wrapper over hlquery's HTTP interface.
 
