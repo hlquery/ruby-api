@@ -22,13 +22,7 @@ It is intended for scripts, services, internal tools, and apps that want a small
 
 ### Why use it?
 
-- Cleaner Ruby API than hand-written Net::HTTP calls.
-- Consistent auth, params, and parsed response handling.
-- Coverage for collections, documents, search, and custom route access.
-
-### Why choose it over raw HTTP?
-
-Choose the Ruby client over raw HTTP when you want less request boilerplate, application code that stays easier to read, and a structure similar to the other official clients.
+Use it when you want a cleaner Ruby interface than hand-written Net::HTTP calls, with consistent auth, params, parsed response handling, and coverage for collections, documents, search, and custom route access.
 
 ### Install
 

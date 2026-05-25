@@ -5,12 +5,24 @@ require "uri"
 require "json"
 
 module Hlquery
+  class RequestException < StandardError
+    attr_reader :status_code, :response
+
+    def initialize(message, status_code: 0, response: nil)
+      super(message)
+      @status_code = status_code
+      @response = response
+    end
+  end
+
   class Request
-    def initialize(base_url, timeout: 10, token: nil, auth_method: "bearer")
+    def initialize(base_url, timeout: 30, token: nil, auth_method: "bearer", headers: {}, throw_on_error: false)
       @base_url = normalize_base_url(base_url)
       @timeout = timeout.to_i
       @token = token
       @auth_method = auth_method
+      @headers = stringify_keys(headers || {})
+      @throw_on_error = throw_on_error
     end
 
     def set_auth_token(token, method = "bearer")
@@ -23,7 +35,7 @@ module Hlquery
       @auth_method = "bearer"
     end
 
-    def execute(method, path, body = nil, query = {})
+    def execute(method, path, body = nil, query = {}, options = {})
       uri = build_uri(path, query || {})
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = uri.scheme == "https"
@@ -32,10 +44,23 @@ module Hlquery
 
       request = build_request(method, uri, body)
       response = http.request(request)
+      enforce_max_response_bytes(response, options)
 
       headers = {}
       response.each_header { |k, v| headers[k] = v }
-      Hlquery::Response.new(response.code.to_i, headers, response.body)
+      hlq_response = Hlquery::Response.new(
+        response.code.to_i,
+        headers,
+        response.body,
+        request: { method: method.to_s.upcase, url: uri.to_s },
+        status_message: response.message
+      )
+
+      if (options.fetch(:throw_on_error, @throw_on_error) || options.fetch("throw_on_error", @throw_on_error)) && hlq_response.error?
+        raise RequestException.new(hlq_response.error || "HTTP #{hlq_response.status_code}", status_code: hlq_response.status_code, response: hlq_response)
+      end
+
+      hlq_response
     end
 
     private
@@ -75,6 +100,12 @@ module Hlquery
       out
     end
 
+    def stringify_keys(obj)
+      return obj unless obj.is_a?(Hash)
+
+      obj.each_with_object({}) { |(k, v), out| out[k.to_s] = v }
+    end
+
     def build_request(method, uri, body)
       klass =
         case method.to_s.upcase
@@ -89,6 +120,7 @@ module Hlquery
 
       request = klass.new(uri.request_uri)
       request["Accept"] = "application/json"
+      @headers.each { |k, v| request[k] = v }
 
       apply_auth_headers(request)
 
@@ -98,6 +130,16 @@ module Hlquery
       end
 
       request
+    end
+
+    def enforce_max_response_bytes(response, options)
+      limit = options[:max_response_bytes] || options["max_response_bytes"]
+      return if limit.nil? || response.body.nil?
+
+      limit = limit.to_i
+      return if limit <= 0 || response.body.bytesize <= limit
+
+      raise RequestException.new("Response exceeded max_response_bytes", status_code: response.code.to_i)
     end
 
     def apply_auth_headers(request)
@@ -115,4 +157,3 @@ module Hlquery
     end
   end
 end
-
