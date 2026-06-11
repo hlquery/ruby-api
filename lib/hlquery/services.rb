@@ -53,66 +53,6 @@ module Hlquery
     end
   end
 
-  class SAM
-    def initialize(request) = @request = request
-
-    def search(collection_name, query, params = {})
-      Helpers.require_string(query, "SAM query")
-      q = Helpers.stringify_keys(params || {}).merge("q" => query)
-      if collection_name && collection_name.to_s != ""
-        q["collection"] = collection_name
-      elsif !q["all"] && !q["collections"]
-        raise ArgumentError, "Collection name is required unless all=true or collections is provided"
-      end
-      @request.execute("GET", "/sam/search", nil, q)
-    end
-
-    def search_all(query, params = {}) = search(nil, query, Helpers.stringify_keys(params || {}).merge("all" => true))
-    def rebuild(collection_name, params = {}) = @request.execute("POST", "/sam/rebuild", nil, Helpers.stringify_keys(params || {}).merge("collection" => collection_name))
-    def status(collection_name = nil, params = {}) = scoped_get("/sam/status", collection_name, params)
-    def debug(collection_name = nil, params = {}) = scoped_get("/sam/debug", collection_name, params)
-    def history(collection_name = nil, limit = 100, params = {}) = scoped_get("/sam/history", collection_name, Helpers.stringify_keys(params || {}).merge("limit" => limit))
-
-    def pause(pause_until_ms, params = {})
-      pause = Integer(pause_until_ms)
-      raise ArgumentError, "SAM pause value must be non-negative" if pause.negative?
-
-      @request.execute("POST", "/sam/pause", nil, Helpers.stringify_keys(params || {}).merge("pause" => pause))
-    end
-
-    def clear_pause(params = {}) = pause(0, params)
-    def improve(params = {}) = @request.execute("POST", "/sam/improve", params || {})
-    def flush_actor_metadata(params = {}) = @request.execute("POST", "/sam/flush_actor_metadata", params || {})
-
-    def add_label(collection_name, document_id, label, params = {})
-      Helpers.require_string(label, "SAM label")
-      @request.execute("POST", "/sam/label/add/#{Helpers.escape(collection_name)}/#{Helpers.escape(document_id)}/#{Helpers.escape(label)}", params || {})
-    end
-
-    def list_documents(collection_name, offset = 0, limit = 20, params = {})
-      q = Helpers.stringify_keys(params || {}).merge("collection" => collection_name, "offset" => offset, "limit" => limit)
-      @request.execute("GET", "/sam/documents", nil, q)
-    end
-
-    def get_document(collection_name, document_id, params = {})
-      @request.execute("GET", "/sam/documents/#{Helpers.escape(collection_name)}/#{Helpers.escape(document_id)}", nil, params || {})
-    end
-
-    def open_document(collection_name, document_id, interaction_query = nil, params = {})
-      q = Helpers.stringify_keys(params || {})
-      q["interaction_query"] = interaction_query if interaction_query && interaction_query.to_s != ""
-      get_document(collection_name, document_id, q)
-    end
-
-    private
-
-    def scoped_get(path, collection_name, params)
-      q = Helpers.stringify_keys(params || {})
-      q["collection"] = collection_name if collection_name && collection_name.to_s != ""
-      @request.execute("GET", path, nil, q)
-    end
-  end
-
   class Keys
     def initialize(request) = @request = request
     def list = @request.execute("GET", "/keys")

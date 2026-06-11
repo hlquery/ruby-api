@@ -25,7 +25,6 @@ module Hlquery
       @documents = Hlquery::Documents.new(@request)
       @search = Hlquery::Search.new(@request, @collections)
       @system = Hlquery::System.new(@request)
-      @sam = Hlquery::SAM.new(@request)
       @keys = Hlquery::Keys.new(@request)
       @users = Hlquery::Users.new(@request)
       @modules = Hlquery::Modules.new(@request)
@@ -70,7 +69,6 @@ module Hlquery
     def search_api = @search
     alias searchApi search_api
     def system = @system
-    def sam = @sam
     def keys = @keys
     def users = @users
     def modules = @modules
@@ -108,21 +106,6 @@ module Hlquery
     def global_search(params = {}) = @search.global_search(params)
     alias globalSearch global_search
     def multi_search(searches) = @search.multi_search(searches)
-
-    def sam_search(collection_name, query, params = {}) = @sam.search(collection_name, query, params)
-    def sam_search_all(query, params = {}) = @sam.search_all(query, params)
-    def sam_rebuild(collection_name, params = {}) = @sam.rebuild(collection_name, params)
-    def sam_status(collection_name = nil, params = {}) = @sam.status(collection_name, params)
-    def sam_debug(collection_name = nil, params = {}) = @sam.debug(collection_name, params)
-    def sam_history(collection_name = nil, limit = 100, params = {}) = @sam.history(collection_name, limit, params)
-    def sam_pause(pause_until_ms, params = {}) = @sam.pause(pause_until_ms, params)
-    def sam_clear_pause(params = {}) = @sam.clear_pause(params)
-    def sam_improve(params = {}) = @sam.improve(params)
-    def sam_flush_actor_metadata(params = {}) = @sam.flush_actor_metadata(params)
-    def sam_add_label(collection_name, document_id, label, params = {}) = @sam.add_label(collection_name, document_id, label, params)
-    def sam_documents(collection_name, offset = 0, limit = 20, params = {}) = @sam.list_documents(collection_name, offset, limit, params)
-    def sam_document(collection_name, document_id, params = {}) = @sam.get_document(collection_name, document_id, params)
-    def sam_open_document(collection_name, document_id, interaction_query = nil, params = {}) = @sam.open_document(collection_name, document_id, interaction_query, params)
 
     def cluster_health = @request.execute("GET", "/cluster/health")
     alias clusterHealth cluster_health
