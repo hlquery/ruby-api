@@ -32,7 +32,7 @@ module Hlquery
       rocksdb: "/rocksdb", rocksdb_internal: "/_rocksdb", doc_total: "/doctotal",
       etc: "/etc", ping: "/ping", integrity: "/integrity", consistency: "/consistency",
       self_check: "/self-check", storage_status: "/admin/storage_status",
-      search_config: "/search-config", llm: "/llm"
+      search_config: "/search-config"
     }.each do |name, path|
       define_method(name) { @request.execute("GET", path) }
     end

@@ -51,7 +51,7 @@ module Hlquery
     %i[
       health ready stats etc info status query startup boot_status metrics metrics_json
       connections rocksdb rocksdb_internal doc_total ping integrity consistency
-      self_check storage_status search_config llm
+      self_check storage_status search_config
     ].each do |name|
       define_method(name) { @system.public_send(name) }
     end
