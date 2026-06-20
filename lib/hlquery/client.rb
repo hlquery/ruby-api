@@ -107,11 +107,11 @@ module Hlquery
     alias globalSearch global_search
     def multi_search(searches) = @search.multi_search(searches)
 
-    def cluster_health = @request.execute("GET", "/cluster/health")
+    def cluster_health = health
     alias clusterHealth cluster_health
-    def cluster_stats = @request.execute("GET", "/cluster/stats")
+    def cluster_stats = stats
     alias clusterStats cluster_stats
-    def cluster_nodes = @request.execute("GET", "/cluster/nodes")
+    def cluster_nodes = links
     alias clusterNodes cluster_nodes
     def links = @request.execute("GET", "/links")
     def links_ping = @request.execute("GET", "/links/ping")
