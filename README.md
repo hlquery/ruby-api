@@ -83,17 +83,19 @@ We welcome contributions from the community! All contributions must be released 
 
 ### How to Contribute
 
-- Check existing [issues](https://github.com/hlquery/hlquery/issues) or create new ones
-- Contribute to client libraries (Node.js, Go, Java, Python, PHP, Ruby, Rust, Perl, C++)
-- Test and report bugs
-- Improve documentation
+- Check existing [Ruby API issues](https://github.com/hlquery/ruby-api/issues) or create new ones
+- Contribute Ruby client changes to [hlquery/ruby-api](https://github.com/hlquery/ruby-api)
+- Contribute shared server/API changes to [hlquery/hlquery](https://github.com/hlquery/hlquery)
+- Test and report bugs against the Ruby client
+- Improve Ruby-specific documentation and examples
 
 ### Community
 
-- 📖 [Documentation](https://docs.hlquery.com)
-- 🐦 [X (Twitter)](https://x.com/hlquery)
-- 📦 [GitHub](https://github.com/hlquery/hlquery)
+- [Documentation](https://docs.hlquery.com)
+- [X (Twitter)](https://x.com/hlquery)
+- [Ruby API GitHub](https://github.com/hlquery/ruby-api)
+- [hlquery GitHub](https://github.com/hlquery/hlquery)
 
 ### License
 
-hlquery is licensed under the [BSD 3-Clause License](https://opensource.org/licenses/BSD-3-Clause).
+The hlquery Ruby API is licensed under the [BSD 3-Clause License](https://opensource.org/licenses/BSD-3-Clause).
