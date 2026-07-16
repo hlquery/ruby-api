@@ -40,6 +40,9 @@ module Hlquery
       @request.execute(method, "/search", body, query)
     end
 
+    alias search_all global_search
+    alias searchAll global_search
+
     def vector_search(collection_name, params = {})
       p = (params || {}).dup
       vector = p["vector_query"] || p[:vector_query] || p["vector"] || p[:vector] || p["embedding"] || p[:embedding]

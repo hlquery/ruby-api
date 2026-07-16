@@ -89,6 +89,15 @@ We welcome contributions from the community! All contributions must be released 
 - Test and report bugs against the Ruby client
 - Improve Ruby-specific documentation and examples
 
+### Search all collections
+
+```ruby
+result = client.search_all(q: "research", limit: 20)
+selected = client.search_all(body: { q: "research", collections: %w[universities science] })
+```
+
+`global_search` remains available as an equivalent name. Results are globally merged and each hit includes `document._collection`.
+
 ### Community
 
 - 📖 [Documentation](https://docs.hlquery.com)

@@ -29,10 +29,11 @@ module Hlquery
       health: "/health", ready: "/ready", status: "/status", query: "/query",
       startup: "/startup", boot_status: "/boot-status", info: "/", stats: "/stats",
       metrics: "/metrics", metrics_json: "/metrics.json", connections: "/connections",
+      metrics_history: "/metrics/history", cache: "/cache", config_files: "/config-files",
       rocksdb: "/rocksdb", rocksdb_internal: "/_rocksdb", doc_total: "/doctotal",
       etc: "/etc", ping: "/ping", integrity: "/integrity", consistency: "/consistency",
       self_check: "/self-check", storage_status: "/admin/storage_status",
-      search_config: "/search-config"
+      search_config: "/search-config", debug_counters: "/debug/counters"
     }.each do |name, path|
       define_method(name) { @request.execute("GET", path) }
     end
@@ -81,6 +82,33 @@ module Hlquery
       path = "/modules/#{Helpers.escape(name)}"
       path = "#{path}/#{suffix}" unless suffix.empty?
       @request.execute(method, path, body, params || {})
+    end
+  end
+
+  class Presets
+    def initialize(request) = @request = request
+    def list = @request.execute("GET", "/presets")
+
+    def get(name)
+      Helpers.require_string(name, "Preset name")
+      @request.execute("GET", "/presets/#{Helpers.escape(name)}")
+    end
+
+    def create(name, payload)
+      Helpers.require_string(name, "Preset name")
+      @request.execute("POST", "/presets/#{Helpers.escape(name)}", payload || {})
+    end
+
+    def update(name, payload)
+      Helpers.require_string(name, "Preset name")
+      @request.execute("PUT", "/presets/#{Helpers.escape(name)}", payload || {})
+    end
+
+    def upsert(name, payload) = update(name, payload)
+
+    def delete(name)
+      Helpers.require_string(name, "Preset name")
+      @request.execute("DELETE", "/presets/#{Helpers.escape(name)}")
     end
   end
 

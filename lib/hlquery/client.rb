@@ -32,6 +32,7 @@ module Hlquery
       @overrides = Hlquery::Overrides.new(@request)
       @synonyms = Hlquery::Synonyms.new(@request)
       @stopwords = Hlquery::Stopwords.new(@request)
+      @presets = Hlquery::Presets.new(@request)
     end
 
     def set_auth_token(token, method = "bearer")
@@ -51,7 +52,7 @@ module Hlquery
     %i[
       health ready stats etc info status query startup boot_status metrics metrics_json
       connections rocksdb rocksdb_internal doc_total ping integrity consistency
-      self_check storage_status search_config
+      self_check storage_status search_config config_files cache metrics_history debug_counters
     ].each do |name|
       define_method(name) { @system.public_send(name) }
     end
@@ -76,6 +77,7 @@ module Hlquery
     def overrides = @overrides
     def synonyms = @synonyms
     def stopwords = @stopwords
+    def presets = @presets
 
     def list_collections(offset = 0, limit = 10) = @collections.list(offset, limit)
     def list_collections_distributed = @request.execute("GET", "/collections/distributed")
@@ -105,6 +107,8 @@ module Hlquery
     def vector_search(collection_name, params = {}) = @search.vector_search(collection_name, params)
     def global_search(params = {}) = @search.global_search(params)
     alias globalSearch global_search
+    alias search_all global_search
+    alias searchAll global_search
     def multi_search(searches) = @search.multi_search(searches)
 
     def cluster_health = health
